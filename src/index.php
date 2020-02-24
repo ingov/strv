@@ -5,7 +5,7 @@
 require_once 'StravaApi.php';
 
 // Replace with the actual URL of this file:
-define('CALLBACK_URL', 'http://localhost:8080/oauth-flow.php?action=callback');
+define('CALLBACK_URL', 'http://localhost:8080/index.php?action=callback');
 // Insert your Strava App ID + Secret:
 define('STRAVA_API_ID', '');
 define('STRAVA_API_SECRET', '');
@@ -95,12 +95,24 @@ switch ($action) {
         echo '</pre>';
 
         $startsate = strtotime("01-01-2020");
-        $enddate = strtotime("31-01-2020");
+        $enddate = strtotime("20-02-2020");
             
         $response = $api->get('/athlete/activities?before='.$enddate.'&after='.$startsate.'&page=1&per_page=30');
         echo '<h2>Test Request (/athlete/activities?before='.$enddate.'&after='.$startsate.'&page=1&per_page=30)</h2>';
+        $summe = 0;
+        foreach ($response as &$activity) {
+            echo '<b>'.$activity->name.'</b><br/>';
+            echo sprintf("%01.2f km", $activity->distance/1000);
+            $summe += $activity->distance;
+            echo '<br/>';
+        }
+        echo '---------------------<br/>';
+        echo '<b>Summe:</b> '.sprintf("%01.2f km", $summe/1000);
+        unset($activity);
+
         echo '<pre>';
         print_r($response);
+        
         echo '</pre>';
 
         return;
